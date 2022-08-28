@@ -45,7 +45,7 @@ def Costo(x, y, teta):
     y_hat = x.dot(teta)
     errores = np.subtract(y_hat, y)
     # J = costo de la regresion
-    J = 1 / (m) * np.sum(np.square(errores))
+    J = np.sum(np.square(errores)) / (2*m)
     return J
 
 def GradienteDescediente(x, y, teta, alfa, epocas):
@@ -60,10 +60,8 @@ def GradienteDescediente(x, y, teta, alfa, epocas):
 
     return teta, historialCostos
 
-#alfa = float(input("Learning rate:"))
-#epocas = int(input("Epocas: "))
 # Definimos nuestro learning rate (alfa) y el numero de iteraciones a realizar
-alfa = .001
+alfa = .00001
 epocas = 100
 
 teta, historialCostos = GradienteDescediente(x, y, teta, alfa, epocas)
@@ -78,3 +76,12 @@ plt.grid()
 plt.xlabel("Epocas")
 plt.ylabel("Costo (J)")
 plt.show()
+
+error = 1
+while np.sqrt(np.square(error) > 0.001):
+    teta, historialCostos = GradienteDescediente(x, y, teta, alfa, epocas)
+    y_hat = x.dot(teta)
+    error =np.mean(np.subtract(y, y_hat))
+    print(np.sqrt(np.square(error)))
+
+print(historialCostos[-1], teta)
