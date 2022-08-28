@@ -3,7 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-df = pd.read_csv('./Fish.csv')
+# El objetivo de este dataset es encontrar una regresion lineal que permita predecir el 
+# peso en gramos de un pez en base a sus carateristicas.
+df = pd.read_csv('./Fish.csv') #https://www.kaggle.com/code/nitinchoudhary012/fish-weight-prediction/data
+
+# Una vez cargado los datos usando dataprep analice las correlaciones entre los datos, 
+# y para asegurarme de mis observaciones utilice seaborn para graficar los datos en base a la especie.
+
+# En este codigo no esta presente dataprep, ya que al ejecutarlo en mi maquina en un ambiente diferente a
+# un notebook terminaba por provocar que dejara de funcionar el codigo.
 
 plt.figure(figsize=(15,6))
 sns.pairplot(data= df,
@@ -12,17 +20,24 @@ sns.pairplot(data= df,
              hue = 'Species')
 plt.show()
 
+# Eliminamos las columnas Length2 y Length3 por tener una alta correlacion con Length1
 df = df.drop(columns = ['Length2', 'Length3'])
+# Remplazamos los valores categoricos de las especies por valores numericos.
 df['Species'] = df['Species'].replace(['Perch','Bream','Roach','Pike','Smelt','Parkki','Whitefish'],[1,2,3,4,5,6,7])
 
+# Guardamos la limpieza y transformacion de los datos.
 df.to_csv('clean_fish.csv')
 
+# Segmentamos nuestras variables en variables depedientes e indepedientes.
 y = df['Weight'].to_numpy()
+# Obtenemos el numero de muestras presentes.
 m = len(y)
 x = df.drop(columns=['Weight'])
+# Agregamos una columna extra a las variables idepediente para poder calcular el valor de b de la pendiente
 x = np.c_[np.ones((len(x),1)), x]
 
-teta = np.random.randn(5,1)
+# Generamos coeficientes aleatorios para nuestras variables indepedientes.
+teta = np.random.randn(5)
 
 # Funcion para calcular el costo de una regresion lineal multivariable
 # 1/2m * sumatoria((y_hat - y)**2)
@@ -30,61 +45,33 @@ def Costo(x, y, teta):
     y_hat = x.dot(teta)
     errores = np.subtract(y_hat, y)
     # J = costo de la regresion
-    J = 1 / (2 * m) * np.sum(np.square(errores))
+    J = 1 / (m) * np.sum(np.square(errores))
     return J
 
 def GradienteDescediente(x, y, teta, alfa, epocas):
     historialCostos = np.zeros(epocas)
-
+    
     for i in range(epocas):
         y_hat = x.dot(teta)
-        error = np.subtract(y_hat,y)
-        #gradienteCosto = x.transpose().dot(error)
-        delta = (alfa/m) * x.transpose().dot(error)
-        teta = teta - delta #- alfa 
+        error =np.subtract(y_hat, y)
+        delta = (2/m) * x.transpose().dot(error)
+        teta = teta - alfa * delta
         historialCostos[i] = Costo(x,y,teta)
 
-    return teta[4], historialCostos
-
-def GradienteDescediente(X, y, theta, alpha, iterations):
-  """
-  Compute cost for linear regression.
-
-  Input Parameters
-  ----------------
-  X : 2D array where each row represent the training example and each column represent the feature ndarray. Dimension(m x n)
-      m= number of training examples
-      n= number of features (including X_0 column of ones)
-  y : 1D array of labels/target value for each traing example. dimension(m x 1)
-  theta : 1D array of fitting parameters or weights. Dimension (1 x n)
-  alpha : Learning rate. Scalar value
-  iterations: No of iterations. Scalar value. 
-
-  Output Parameters
-  -----------------
-  theta : Final Value. 1D array of fitting parameters or weights. Dimension (1 x n)
-  cost_history: Conatins value of cost for each iteration. 1D array. Dimansion(m x 1)
-  """
-  cost_history = np.zeros(iterations)
-
-  for i in range(iterations):
-    predictions = X.dot(theta)
-    errors = np.subtract(predictions, y)
-    sum_delta = (alpha / m) * X.transpose().dot(errors)
-    theta = theta - sum_delta
-    cost_history[i] = Costo(X, y, theta)  
-
-  return theta, cost_history
+    return teta, historialCostos
 
 #alfa = float(input("Learning rate:"))
 #epocas = int(input("Epocas: "))
+# Definimos nuestro learning rate (alfa) y el numero de iteraciones a realizar
 alfa = .001
-epocas = 10000
+epocas = 100
 
 teta, historialCostos = GradienteDescediente(x, y, teta, alfa, epocas)
 
 print(teta)
+print((historialCostos[-1]))
 
+# En la siguiente grafica podemos observar el como a medida que pasan las iteraciones el error disminuye
 plt.plot(range(1, epocas + 1), historialCostos, color = 'blue')
 plt.rcParams["figure.figsize"] = (10,6)
 plt.grid()
