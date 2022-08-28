@@ -2,4 +2,3 @@ linear_reg_gd.py
 *.csv
 *.txt
 *.html
-*.ipynb
