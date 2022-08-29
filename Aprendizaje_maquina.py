@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
 
 # El objetivo de este dataset es encontrar una regresion lineal que permita predecir el 
 # peso en gramos de un pez en base a sus carateristicas.
@@ -30,11 +31,13 @@ df.to_csv('clean_fish.csv')
 
 # Segmentamos nuestras variables en variables depedientes e indepedientes.
 y = df['Weight'].to_numpy()
+y, testY = train_test_split(y, test_size=0.33)
 # Obtenemos el numero de muestras presentes.
 m = len(y)
 x = df.drop(columns=['Weight'])
 # Agregamos una columna extra a las variables idepediente para poder calcular el valor de b de la pendiente
 x = np.c_[np.ones((len(x),1)), x]
+x, testX = train_test_split(x, test_size=0.33)
 
 # Generamos coeficientes aleatorios para nuestras variables indepedientes.
 teta = np.random.randn(5)
@@ -77,11 +80,22 @@ plt.xlabel("Epocas")
 plt.ylabel("Costo (J)")
 plt.show()
 
-error = 1
-while np.sqrt(np.square(error) > 0.001):
+#Entrenamos el modelo
+costo = Costo(x,y, teta)
+i = 1
+while True:
+    i = i + 1
     teta, historialCostos = GradienteDescediente(x, y, teta, alfa, epocas)
-    y_hat = x.dot(teta)
-    error =np.mean(np.subtract(y, y_hat))
-    print(np.sqrt(np.square(error)))
+    nuevoCosto = Costo(x,y,teta)
+    print("Iteracion: ", i*100, "Costo: ", nuevoCosto)
+    if(costo - nuevoCosto > 0):
+        costo = nuevoCosto
+    else:
+        break
+print("Costo: ", historialCostos[-1], "Coeficientes: ",teta)
 
-print(historialCostos[-1], teta)
+y_hat = testX.dot(teta)
+comparativaValores = np.transpose(np.array([y_hat, testY, np.subtract(y_hat, testY)]))
+comparativa = pd.DataFrame(comparativaValores, columns = ["y_hat", "y", "error"])
+print(comparativa)
+print(comparativa.describe())
