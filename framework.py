@@ -59,6 +59,7 @@ def plot_loss(history):
   plt.ylabel('Error [MPG]')
   plt.legend()
   plt.grid(True)
+  plt.show()
 
 # %%
 normalizer = tf.keras.layers.Normalization(axis=-1)
@@ -112,6 +113,7 @@ lims = [0, 2000]
 plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
+plt.show()
 
 # %%
 print(test_results['linear_model'])
@@ -177,6 +179,8 @@ lims = [0, 2000]
 plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
+plt.show()
+
 
 # %%
 print(r2_score(y_test, test_predictions))
@@ -186,6 +190,8 @@ error = test_predictions - y_test
 plt.hist(error, bins=25)
 plt.xlabel('Prediction Error [MPG]')
 _ = plt.ylabel('Count')
+plt.show()
+
 
 # %%
 small_model = keras.Sequential([
@@ -221,6 +227,7 @@ lims = [0, 2000]
 plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
+plt.show()
 
 # %%
 print(r2_score(y_test, test_predictions))
@@ -230,6 +237,7 @@ error = test_predictions - y_test
 plt.hist(error, bins=25)
 plt.xlabel('Prediction Error [MPG]')
 _ = plt.ylabel('Count')
+plt.show()
 
 # %%
 big_model = keras.Sequential([
@@ -268,6 +276,7 @@ lims = [0, 2000]
 plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
+plt.show()
 
 # %%
 print(r2_score(y_test, test_predictions))
@@ -277,6 +286,7 @@ error = test_predictions - y_test
 plt.hist(error, bins=25)
 plt.xlabel('Prediction Error [MPG]')
 _ = plt.ylabel('Count')
+plt.show()
 
 # %%
 # plot_loss(historys)
@@ -287,12 +297,14 @@ plt.xlabel('Epoch')
 plt.ylabel('Error [MPG]')
 plt.legend()
 plt.grid(True)
+plt.show()
 
 # %%
 plotter = tfdocs.plots.HistoryPlotter(metric = 'binary_crossentropy', smoothing_std=10)
 plotter.plot(historys)
 a = plt.xscale('log')
 plt.xlabel("Epochs [Log Scale]")
+plt.show()
 
 # %%
 big_model_r = keras.Sequential([
@@ -331,6 +343,7 @@ lims = [0, 2000]
 plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
+plt.show()
 
 # %%
 print(r2_score(y_test, test_predictions))
@@ -340,6 +353,7 @@ error = test_predictions - y_test
 plt.hist(error, bins=25)
 plt.xlabel('Prediction Error [MPG]')
 _ = plt.ylabel('Count')
+plt.show()
 
 # %%
 print(test_results)
@@ -386,7 +400,7 @@ lims = [0, 2000]
 plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
-
+plt.show()
 # %%
 print(r2_score(y_test, test_predictions))
 
@@ -395,6 +409,7 @@ error = test_predictions - y_test
 plt.hist(error, bins=25)
 plt.xlabel('Prediction Error [MPG]')
 _ = plt.ylabel('Count')
+plt.show()
 
 # %%
 # tf.keras.losses.BinaryCrossentropy(
